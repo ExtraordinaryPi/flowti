@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import {
   Table, Button, Typography, Space, App as AntApp,
   Tabs, Upload, Tag, Spin,
@@ -18,6 +18,7 @@ import { Scan } from '../types/scan';
 const { Title, Text } = Typography;
 
 function triggerDownload(blob: Blob, filename: string) {
+  // Kein Ant Design-Äquivalent für programmatische Blob-Downloads
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -36,7 +37,7 @@ export function PortfoliosPage() {
   const [scans, setScans] = useState<Scan[]>([]);
   const [tabLoading, setTabLoading] = useState(false);
 
-  const loadPortfolios = async () => {
+  const loadPortfolios = useCallback(async () => {
     setLoading(true);
     try {
       const page = await portfolioApi.getAll({ size: 100 });
@@ -47,9 +48,9 @@ export function PortfoliosPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [notification]);
 
-  useEffect(() => { loadPortfolios(); }, []);
+  useEffect(() => { loadPortfolios(); }, [loadPortfolios]);
 
   const selectPortfolio = async (p: Portfolio) => {
     setSelected(p);

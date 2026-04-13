@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Table, Button, Typography, Space, App as AntApp, Tag } from 'antd';
+import { Popconfirm } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { rawdataApi } from '../api/rawdataApi';
@@ -12,7 +13,7 @@ export function ScansPage() {
   const [rawdata, setRawdata] = useState<Rawdata[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const page = await rawdataApi.getAll({ size: 100 });
@@ -23,9 +24,9 @@ export function ScansPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [notification]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const columns: ColumnsType<Rawdata> = [
     { title: 'ID', dataIndex: 'id', key: 'id' },
@@ -35,10 +36,9 @@ export function ScansPage() {
     {
       title: 'Aktionen', key: 'actions',
       render: (_, record) => (
-        <Button
-          size="small"
-          danger
-          onClick={async () => {
+        <Popconfirm
+          title="Wirklich löschen?"
+          onConfirm={async () => {
             try {
               await rawdataApi.delete(record.id);
               setRawdata((prev) => prev.filter((r) => r.id !== record.id));
@@ -48,9 +48,11 @@ export function ScansPage() {
               notification.error({ message: msg });
             }
           }}
+          okText="Ja"
+          cancelText="Nein"
         >
-          Löschen
-        </Button>
+          <Button size="small" danger>Löschen</Button>
+        </Popconfirm>
       ),
     },
   ];

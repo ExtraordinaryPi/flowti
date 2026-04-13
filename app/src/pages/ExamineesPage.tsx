@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Table, Button, Typography, Space, App as AntApp, Tabs } from 'antd';
+import { Popconfirm } from 'antd';
 import { ReloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { examinerApi } from '../api/examinerApi';
@@ -14,7 +15,7 @@ export function ExamineesPage() {
   const [actors, setActors] = useState<Actor[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const [exPage, acPage] = await Promise.all([
@@ -29,9 +30,9 @@ export function ExamineesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [notification]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const examinerColumns: ColumnsType<Examiner> = [
     { title: 'Vorname', dataIndex: 'firstName', key: 'firstName' },
@@ -40,15 +41,22 @@ export function ExamineesPage() {
     {
       title: 'Aktion', key: 'action',
       render: (_, record) => (
-        <Button size="small" danger onClick={async () => {
-          try {
-            await examinerApi.delete(record.id);
-            setExaminers((prev) => prev.filter((e) => e.id !== record.id));
-          } catch (e: unknown) {
-            const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
-            notification.error({ message: msg });
-          }
-        }}>Löschen</Button>
+        <Popconfirm
+          title="Wirklich löschen?"
+          onConfirm={async () => {
+            try {
+              await examinerApi.delete(record.id);
+              setExaminers((prev) => prev.filter((e) => e.id !== record.id));
+            } catch (e: unknown) {
+              const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
+              notification.error({ message: msg });
+            }
+          }}
+          okText="Ja"
+          cancelText="Nein"
+        >
+          <Button size="small" danger>Löschen</Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -60,15 +68,22 @@ export function ExamineesPage() {
     {
       title: 'Aktion', key: 'action',
       render: (_, record) => (
-        <Button size="small" danger onClick={async () => {
-          try {
-            await actorApi.delete(record.id);
-            setActors((prev) => prev.filter((a) => a.id !== record.id));
-          } catch (e: unknown) {
-            const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
-            notification.error({ message: msg });
-          }
-        }}>Löschen</Button>
+        <Popconfirm
+          title="Wirklich löschen?"
+          onConfirm={async () => {
+            try {
+              await actorApi.delete(record.id);
+              setActors((prev) => prev.filter((a) => a.id !== record.id));
+            } catch (e: unknown) {
+              const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
+              notification.error({ message: msg });
+            }
+          }}
+          okText="Ja"
+          cancelText="Nein"
+        >
+          <Button size="small" danger>Löschen</Button>
+        </Popconfirm>
       ),
     },
   ];

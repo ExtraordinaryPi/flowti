@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Table, Button, Typography, Space, App as AntApp, Tag, Select } from 'antd';
 import { DownloadOutlined, ReloadOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
@@ -8,9 +8,12 @@ import { Exam } from '../types/exam';
 const { Title } = Typography;
 
 function triggerDownload(blob: Blob, filename: string) {
+  // Kein Ant Design-Äquivalent für programmatische Blob-Downloads
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
+  a.href = url;
+  a.download = filename;
+  a.click();
   URL.revokeObjectURL(url);
 }
 
@@ -22,7 +25,7 @@ export function RawdataPage() {
   const [loading, setLoading] = useState(false);
   const [exportMode, setExportMode] = useState('DEFAULT');
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const page = await examApi.getAll({ size: 100 });
@@ -33,9 +36,9 @@ export function RawdataPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [notification]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const columns: ColumnsType<Exam> = [
     { title: 'Exam', dataIndex: 'name', key: 'name' },

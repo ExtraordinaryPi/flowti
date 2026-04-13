@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Tabs, Table, Button, Typography, Space, App as AntApp, Tag, Descriptions } from 'antd';
+import { Popconfirm } from 'antd';
 import { ReloadOutlined, PlusOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { userApi } from '../api/userApi';
@@ -18,7 +19,7 @@ export function SettingsPage() {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const load = async () => {
+  const load = useCallback(async () => {
     setLoading(true);
     try {
       const [uPage, cPage, fList, cu] = await Promise.all([
@@ -37,9 +38,9 @@ export function SettingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [notification]);
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => { load(); }, [load]);
 
   const userColumns: ColumnsType<User> = [
     { title: 'Benutzername', dataIndex: 'username', key: 'username' },
@@ -49,15 +50,22 @@ export function SettingsPage() {
     {
       title: 'Aktion', key: 'action',
       render: (_, record) => (
-        <Button size="small" danger onClick={async () => {
-          try {
-            await userApi.delete(record.id);
-            setUsers((p) => p.filter((u) => u.id !== record.id));
-          } catch (e: unknown) {
-            const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
-            notification.error({ message: msg });
-          }
-        }}>Löschen</Button>
+        <Popconfirm
+          title="Wirklich löschen?"
+          onConfirm={async () => {
+            try {
+              await userApi.delete(record.id);
+              setUsers((p) => p.filter((u) => u.id !== record.id));
+            } catch (e: unknown) {
+              const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
+              notification.error({ message: msg });
+            }
+          }}
+          okText="Ja"
+          cancelText="Nein"
+        >
+          <Button size="small" danger>Löschen</Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -69,15 +77,22 @@ export function SettingsPage() {
     {
       title: 'Aktion', key: 'action',
       render: (_, record) => (
-        <Button size="small" danger onClick={async () => {
-          try {
-            await clientApi.delete(record.id);
-            setClients((p) => p.filter((c) => c.id !== record.id));
-          } catch (e: unknown) {
-            const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
-            notification.error({ message: msg });
-          }
-        }}>Löschen</Button>
+        <Popconfirm
+          title="Wirklich löschen?"
+          onConfirm={async () => {
+            try {
+              await clientApi.delete(record.id);
+              setClients((p) => p.filter((c) => c.id !== record.id));
+            } catch (e: unknown) {
+              const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
+              notification.error({ message: msg });
+            }
+          }}
+          okText="Ja"
+          cancelText="Nein"
+        >
+          <Button size="small" danger>Löschen</Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -88,15 +103,22 @@ export function SettingsPage() {
     {
       title: 'Aktion', key: 'action',
       render: (_, record) => (
-        <Button size="small" danger onClick={async () => {
-          try {
-            await folderApi.delete(record.id);
-            setFolders((p) => p.filter((f) => f.id !== record.id));
-          } catch (e: unknown) {
-            const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
-            notification.error({ message: msg });
-          }
-        }}>Löschen</Button>
+        <Popconfirm
+          title="Wirklich löschen?"
+          onConfirm={async () => {
+            try {
+              await folderApi.delete(record.id);
+              setFolders((p) => p.filter((f) => f.id !== record.id));
+            } catch (e: unknown) {
+              const msg = e instanceof Error ? e.message : 'Unbekannter Fehler';
+              notification.error({ message: msg });
+            }
+          }}
+          okText="Ja"
+          cancelText="Nein"
+        >
+          <Button size="small" danger>Löschen</Button>
+        </Popconfirm>
       ),
     },
   ];
