@@ -13,6 +13,8 @@ export default defineConfig(({ mode }) => {
         '/rest': { target: apiTarget, changeOrigin: true },
         '/oauth2': { target: apiTarget, changeOrigin: true },
         '/xexam': { target: apiTarget, changeOrigin: true },
+        '/perform_login': { target: apiTarget, changeOrigin: true },
+        '/logout': { target: apiTarget, changeOrigin: true },
       },
     },
   }
