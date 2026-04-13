@@ -11,11 +11,13 @@ async function request<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const { token, serverUrl } = useAuthStore.getState();
-
   const url = `${serverUrl.replace(/\/$/, '')}${path}`;
 
+  const isFormData = options.body instanceof FormData;
+
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    // Content-Type NICHT setzen wenn FormData (Browser setzt es mit Boundary)
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers as Record<string, string>),
   };
 
@@ -35,7 +37,7 @@ async function request<T>(
     let errorBody: { code?: string; title?: string } = {};
     try {
       errorBody = await response.json();
-    } catch (_e) {}
+    } catch (_e) { /* body ist nicht JSON-parseable */ }
     throw new ApiError(
       errorBody.code ?? 'UNKNOWN',
       errorBody.title ?? `Fehler ${response.status}`,
@@ -73,16 +75,9 @@ export function post<T>(path: string, body?: unknown): Promise<T> {
 }
 
 export function postForm<T>(path: string, formData: FormData): Promise<T> {
-  const { token, serverUrl } = useAuthStore.getState();
-  const url = `${serverUrl.replace(/\/$/, '')}${path}`;
-  return fetch(url, {
+  return request<T>(path, {
     method: 'POST',
-    headers: token ? { Authorization: `Bearer ${token}` } : {},
     body: formData,
-  }).then(async (r) => {
-    if (!r.ok) throw new ApiError('UPLOAD_ERROR', `Upload fehlgeschlagen`, r.status);
-    if (r.status === 204) return undefined as T;
-    return r.json();
   });
 }
 
