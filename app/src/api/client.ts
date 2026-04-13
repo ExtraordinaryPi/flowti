@@ -8,7 +8,7 @@ export class ApiError extends Error {
 
 async function request<T>(
   path: string,
-  options: RequestInit = {}
+  options: Parameters<typeof fetch>[1] = {}
 ): Promise<T> {
   const { token, serverUrl } = useAuthStore.getState();
   const url = `${serverUrl.replace(/\/$/, '')}${path}`;
@@ -37,7 +37,7 @@ async function request<T>(
     let errorBody: { code?: string; title?: string } = {};
     try {
       errorBody = await response.json();
-    } catch (_e) { /* body ist nicht JSON-parseable */ }
+    } catch { /* body ist nicht JSON-parseable */ }
     throw new ApiError(
       errorBody.code ?? 'UNKNOWN',
       errorBody.title ?? `Fehler ${response.status}`,

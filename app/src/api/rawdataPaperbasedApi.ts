@@ -1,4 +1,4 @@
-import { get, post, postForm, put, del, downloadBlob } from './client';
+import { post, postForm, put, del, downloadBlob } from './client';
 import { Scan } from '../types/scan';
 
 const BASE = '/rest/app/rawdataPaperbased';

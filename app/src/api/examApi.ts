@@ -1,4 +1,4 @@
-import { get, post, postForm, put, del, downloadBlob } from './client';
+import { get, postForm, put, del, downloadBlob } from './client';
 import { Page, PageParams } from '../types/common';
 import { Exam, ExamRequest } from '../types/exam';
 import { Scan } from '../types/scan';
