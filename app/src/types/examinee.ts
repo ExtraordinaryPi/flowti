@@ -25,6 +25,7 @@ export interface ExaminerRequest {
   firstName: string;
   lastName: string;
   login?: string;
+  attributes?: Record<string, string>;
 }
 
 export interface Actor {

@@ -1,3 +1,5 @@
+import { EntityReduced } from './common';
+
 export interface User {
   id: number;
   username: string;
@@ -31,7 +33,7 @@ export interface ClientRequest {
 export interface Folder {
   id: number;
   name: string;
-  parent?: { id: number; name: string };
+  parent?: EntityReduced;
 }
 
 export interface FolderRequest {
