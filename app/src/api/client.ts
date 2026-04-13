@@ -11,7 +11,8 @@ async function request<T>(
   options: Parameters<typeof fetch>[1] = {}
 ): Promise<T> {
   const { token, serverUrl } = useAuthStore.getState();
-  const url = `${serverUrl.replace(/\/$/, '')}${path}`;
+  // Wenn serverUrl leer ist, werden relative URLs genutzt → Vite-Proxy leitet weiter
+  const url = serverUrl ? `${serverUrl.replace(/\/$/, '')}${path}` : path;
 
   const isFormData = options.body instanceof FormData;
 
