@@ -3,7 +3,7 @@ import { Page, PageParams } from '../types/common';
 import { Portfolio, PortfolioRequest, PortfolioState } from '../types/portfolio';
 import { Exam } from '../types/exam';
 import { Examinee, Examiner } from '../types/examinee';
-import { Scan, PortfolioScan, MarkerThresholds } from '../types/scan';
+import { PortfolioScan, MarkerThresholds } from '../types/scan';
 import { ExamChecked, CheckValue } from '../types/examChecked';
 
 const BASE = '/rest/app/portfolio';
@@ -37,7 +37,10 @@ export const portfolioApi = {
     get<Page<Scan>>(`${BASE}/${id}/scansInvalidPaged`, params),
 
   getValidScans: (id: number) =>
-    get<Scan[]>(`${BASE}/${id}/validRawdataPaperbased`),
+    get<PortfolioScan[]>(`${BASE}/${id}/validRawdataPaperbased`),
+
+  updateValidScan: (portfolioId: number, scanId: number, data: { scanReviewState: string }) =>
+    put<PortfolioScan>(`${BASE}/${portfolioId}/validRawdataPaperbased/${scanId}`, { id: scanId, ...data }),
 
   deleteScansInvalid: (id: number) =>
     del<void>(`${BASE}/${id}/scansInvalid`),
@@ -153,11 +156,19 @@ export const portfolioApi = {
   applyWarpAll: (id: number, warp: { warpX: number; warpY: number }) =>
     put<void>(`${BASE}/${id}/warp`, warp),
 
-  getChecked: (id: number, params?: { filter?: string; page?: number; limit?: number }) =>
-    get<Page<ExamChecked>>(`${BASE}/${id}/checked`, params),
+  getChecked: (id: number, params?: { value?: string; page?: number; limit?: number }) => {
+    const { value, page = 1, limit = 200 } = params ?? {};
+    const filter = value ? JSON.stringify([{ property: 'value', value }]) : undefined;
+    return get<Page<ExamChecked>>(`${BASE}/${id}/checked`, {
+      page,
+      start: (page - 1) * limit,
+      limit,
+      ...(filter ? { filter } : {}),
+    });
+  },
 
   updateChecked: (id: number, examCheckedId: number, data: { value: CheckValue }) =>
-    put<ExamChecked>(`${BASE}/${id}/checked/${examCheckedId}`, data),
+    put<ExamChecked>(`${BASE}/${id}/checked/${examCheckedId}`, { id: examCheckedId, ...data }),
 
   changeCheckMarkPage: (id: number, value: CheckValue, entryIds: number[]) =>
     put<void>(`${BASE}/${id}/changeCheckMarkPage/${value}`, entryIds),

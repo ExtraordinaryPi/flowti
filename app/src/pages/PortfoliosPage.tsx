@@ -27,6 +27,7 @@ import { SheetSettingsTab } from '../components/SheetSettingsTab';
 import { ScanUploadTab } from '../components/ScanUploadTab';
 import { PositionValidationPanel } from '../components/PositionValidationPanel';
 import { ScanChecksTab } from '../components/ScanChecksTab';
+import { ScanValidationTab } from '../components/ScanValidationTab';
 
 const { Title, Text } = Typography;
 const { DirectoryTree } = Tree;
@@ -713,6 +714,15 @@ export function PortfoliosPage() {
                 label: 'Scan-Prüfung',
                 children: (
                   <ScanChecksTab portfolioId={selected.id} />
+                ),
+              },
+              {
+                key: 'validations',
+                label: 'Scan-Validierung',
+                children: (
+                  <div style={{ height: 'calc(100vh - 200px)', overflow: 'hidden' }}>
+                    <ScanValidationTab portfolioId={selected.id} />
+                  </div>
                 ),
               },
               {

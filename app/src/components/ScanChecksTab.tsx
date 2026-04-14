@@ -73,7 +73,7 @@ export function ScanChecksTab({ portfolioId }: Props) {
     setLoading(true);
     try {
       const result = await portfolioApi.getChecked(portfolioId, {
-        filter: f,
+        value: f,
         page: p,
         limit: PAGE_SIZE,
       });

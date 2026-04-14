@@ -5,10 +5,6 @@ import {
   MoonOutlined,
   LogoutOutlined,
   FolderOutlined,
-  FileTextOutlined,
-  TeamOutlined,
-  ScanOutlined,
-  DatabaseOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
@@ -19,10 +15,6 @@ const { Header, Content } = Layout;
 
 const NAV_ITEMS: MenuProps['items'] = [
   { key: '/portfolios', icon: <FolderOutlined />, label: 'Portfolios' },
-  { key: '/exams', icon: <FileTextOutlined />, label: 'Examen' },
-  { key: '/examinees', icon: <TeamOutlined />, label: 'Prüflinge' },
-  { key: '/scans', icon: <ScanOutlined />, label: 'Scans' },
-  { key: '/rawdata', icon: <DatabaseOutlined />, label: 'Rohdaten' },
   { key: '/settings', icon: <SettingOutlined />, label: 'Einstellungen' },
 ];
 

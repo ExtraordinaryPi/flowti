@@ -2,12 +2,32 @@ import { EntityReduced } from './common';
 
 export interface PortfolioScan {
   id: number;
-  state: string;
+  scanState: string;
+  scanReviewState?: string;
   name?: string;
+  nameReduced?: string;
   page?: number;
   variant?: number;
-  exam?: EntityReduced;
-  examinee?: EntityReduced;
+  examId?: number;
+  examineeId?: number;
+  examineeIdentifier?: string;
+  examineeFirstName?: string;
+  examineeLastName?: string;
+  problemCount?: number;
+}
+
+export interface ScanEntryValue {
+  id: number;
+  value: string;
+  computedValue?: string;
+  confidence?: number;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  representationType: string;
+  questionElementId?: number;
+  position?: number;
 }
 
 export interface MarkerBarcodeEntry {

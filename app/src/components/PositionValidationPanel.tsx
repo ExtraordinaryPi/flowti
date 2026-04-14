@@ -78,11 +78,15 @@ function drawOverlays(
   if (!ctx) return;
   ctx.clearRect(0, 0, w, h);
 
+  // Y-Achse invertiert: API liefert y=0 unten, y=1 oben → Canvas: y=0 oben
+  const cy  = (y: number)              => h - y * h;           // Punkt
+  const cyR = (y: number, rh: number)  => h - y * h - rh * h; // Rechteck-Oberkante
+
   const CORNER_TYPES = ['UPPER_LEFT', 'UPPER_RIGHT', 'LOWER_LEFT', 'LOWER_RIGHT'];
 
   markerEntries.forEach(({ x, y, type }) => {
     const px = x * w;
-    const py = y * h;
+    const py = cy(y);
     const isCorner = CORNER_TYPES.includes(type);
     const size = isCorner ? 16 : 12;
     ctx.strokeStyle = isCorner ? '#1677ff' : '#ff4d4f';
@@ -105,7 +109,7 @@ function drawOverlays(
   questionElements.forEach(({ x, y, width, height, state }) => {
     ctx.strokeStyle = state === 'VALID' ? '#52c41a' : '#faad14';
     ctx.lineWidth = 1.5;
-    ctx.strokeRect(x * w, y * h, width * w, height * h);
+    ctx.strokeRect(x * w, cyR(y, height), width * w, height * h);
   });
 }
 
@@ -384,18 +388,18 @@ export function PositionValidationPanel({ portfolioId }: Props) {
 
   // ── Listendaten ──
 
-  const validCount   = scans.filter((s) => s.state === 'VALID').length;
-  const invalidCount = scans.filter((s) => s.state !== 'VALID').length;
+  const validCount   = scans.filter((s) => s.scanState === 'VALID').length;
+  const invalidCount = scans.filter((s) => s.scanState !== 'VALID').length;
 
   const filteredScans = scans
     .filter((s) => {
-      if (listFilter === 'valid')   return s.state === 'VALID';
-      if (listFilter === 'invalid') return s.state !== 'VALID';
+      if (listFilter === 'valid')   return s.scanState === 'VALID';
+      if (listFilter === 'invalid') return s.scanState !== 'VALID';
       return true;
     })
     .sort((a, b) => {
-      const ia = STATE_ORDER.indexOf(a.state ?? '');
-      const ib = STATE_ORDER.indexOf(b.state ?? '');
+      const ia = STATE_ORDER.indexOf(a.scanState ?? '');
+      const ib = STATE_ORDER.indexOf(b.scanState ?? '');
       return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
     });
 
@@ -563,7 +567,7 @@ export function PositionValidationPanel({ portfolioId }: Props) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {filteredScans.map((scan) => {
                   const isSelected = selectedScan?.id === scan.id;
-                  const label = STATE_META[scan.state ?? '']?.label ?? scan.state ?? '?';
+                  const label = STATE_META[scan.scanState ?? '']?.label ?? scan.scanState ?? '?';
                   return (
                     <Tooltip key={scan.id} title={label} placement="right" mouseEnterDelay={0.5}>
                       <div
@@ -576,7 +580,7 @@ export function PositionValidationPanel({ portfolioId }: Props) {
                           borderLeft: isSelected ? '2px solid #1677ff' : '2px solid transparent',
                         }}
                       >
-                        <StateIcon state={scan.state ?? ''} style={{ fontSize: 12, flexShrink: 0 }} />
+                        <StateIcon state={scan.scanState ?? ''} style={{ fontSize: 12, flexShrink: 0 }} />
                         <span style={{ fontSize: 11, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', flex: 1 }}>
                           {scan.name ?? `#${scan.id}`}
                         </span>
@@ -599,9 +603,9 @@ export function PositionValidationPanel({ portfolioId }: Props) {
             {/* Scan-Aktionen */}
             <Space style={{ marginBottom: 6, flexShrink: 0 }} wrap>
               <Space size={4}>
-                <StateIcon state={selectedScan.state ?? ''} style={{ fontSize: 14 }} />
+                <StateIcon state={selectedScan.scanState ?? ''} style={{ fontSize: 14 }} />
                 <Text style={{ fontSize: 12 }}>
-                  {STATE_META[selectedScan.state ?? '']?.label ?? selectedScan.state}
+                  {STATE_META[selectedScan.scanState ?? '']?.label ?? selectedScan.scanState}
                 </Text>
               </Space>
               {selectedScan.name && (
