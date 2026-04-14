@@ -3,7 +3,7 @@ import { Page, PageParams } from '../types/common';
 import { Portfolio, PortfolioRequest, PortfolioState } from '../types/portfolio';
 import { Exam } from '../types/exam';
 import { Examinee, Examiner } from '../types/examinee';
-import { PortfolioScan, MarkerThresholds } from '../types/scan';
+import { PortfolioScan, MarkerThresholds, Scan } from '../types/scan';
 import { ExamChecked, CheckValue } from '../types/examChecked';
 
 const BASE = '/rest/app/portfolio';

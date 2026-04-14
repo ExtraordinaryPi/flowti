@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Button, Spin, Tag, Space, Typography, App as AntApp,
   Tooltip, Empty, Table, InputNumber, Slider, Tabs, Dropdown, Segmented, Badge,
@@ -15,6 +15,7 @@ import { rawdataPaperbasedApi } from '../api/rawdataPaperbasedApi';
 import type {
   PortfolioScan, MarkerBarcodeEntry, ScanQuestionElement, MarkerThresholds,
 } from '../types/scan';
+import { ScanImageViewer } from './ScanImageViewer';
 
 const { Text } = Typography;
 
@@ -38,19 +39,6 @@ const STATE_META: Record<string, { label: string; category: StateCategory }> = {
   DUPLICATE:                              { label: 'Duplikat',             category: 'warning'  },
 };
 
-function stateCategory(state: string): StateCategory {
-  return STATE_META[state]?.category ?? 'neutral';
-}
-
-function StateIcon({ state, style }: { state: string; style?: React.CSSProperties }) {
-  const cat = stateCategory(state);
-  if (cat === 'valid')   return <CheckCircleFilled  style={{ color: '#52c41a', ...style }} />;
-  if (cat === 'error')   return <CloseCircleFilled  style={{ color: '#ff4d4f', ...style }} />;
-  if (cat === 'warning') return <WarningFilled      style={{ color: '#faad14', ...style }} />;
-  if (state === 'DUPLICATE') return <CopyOutlined   style={{ color: '#d48806', ...style }} />;
-  return                        <ClockCircleOutlined style={{ color: '#bfbfbf', ...style }} />;
-}
-
 const STATE_ORDER = [
   'MARKER_NOT_FOUND', 'BARCODE_NOT_FOUND', 'MARKER_MISMATCH',
   'BARCODE_FORMAT_MISMATCH', 'BARCODE_EXAM_ID_MISMATCH',
@@ -59,148 +47,13 @@ const STATE_ORDER = [
   'DUPLICATE', 'UNPROCESSED', 'RESET', 'VALID',
 ];
 
-// ─── Canvas-Zeichnung ──────────────────────────────────────────────────────────
-
-function drawOverlays(
-  canvas: HTMLCanvasElement,
-  img: HTMLImageElement,
-  markerEntries: MarkerBarcodeEntry[],
-  questionElements: ScanQuestionElement[],
-) {
-  const w = img.offsetWidth;
-  const h = img.offsetHeight;
-  if (w === 0 || h === 0) return;
-
-  canvas.width = w;
-  canvas.height = h;
-
-  const ctx = canvas.getContext('2d');
-  if (!ctx) return;
-  ctx.clearRect(0, 0, w, h);
-
-  // Y-Achse invertiert: API liefert y=0 unten, y=1 oben → Canvas: y=0 oben
-  const cy  = (y: number)              => h - y * h;           // Punkt
-  const cyR = (y: number, rh: number)  => h - y * h - rh * h; // Rechteck-Oberkante
-
-  const CORNER_TYPES = ['UPPER_LEFT', 'UPPER_RIGHT', 'LOWER_LEFT', 'LOWER_RIGHT'];
-
-  markerEntries.forEach(({ x, y, type }) => {
-    const px = x * w;
-    const py = cy(y);
-    const isCorner = CORNER_TYPES.includes(type);
-    const size = isCorner ? 16 : 12;
-    ctx.strokeStyle = isCorner ? '#1677ff' : '#ff4d4f';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(px - size, py);
-    ctx.lineTo(px + size, py);
-    ctx.moveTo(px, py - size);
-    ctx.lineTo(px, py + size);
-    ctx.stroke();
-    if (isCorner) {
-      ctx.beginPath();
-      ctx.arc(px, py, 20, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(22,119,255,0.4)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-    }
-  });
-
-  questionElements.forEach(({ x, y, width, height, state }) => {
-    ctx.strokeStyle = state === 'VALID' ? '#52c41a' : '#faad14';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(x * w, cyR(y, height), width * w, height * h);
-  });
-}
-
-// ─── Bild-Viewer mit Canvas-Overlay ───────────────────────────────────────────
-
-function ScanImageViewer({
-  scanId,
-  markerEntries,
-  questionElements,
-}: {
-  scanId: number;
-  markerEntries: MarkerBarcodeEntry[];
-  questionElements: ScanQuestionElement[];
-}) {
-  const [blobUrl, setBlobUrl] = useState<string | null>(null);
-  const [imgLoading, setImgLoading] = useState(true);
-  const imgRef = useRef<HTMLImageElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const urlRef = useRef<string | null>(null);
-
-  useEffect(() => {
-    setImgLoading(true);
-    setBlobUrl(null);
-    rawdataPaperbasedApi.getImage(scanId)
-      .then((blob) => {
-        const url = URL.createObjectURL(blob);
-        urlRef.current = url;
-        setBlobUrl(url);
-      })
-      .catch(() => setImgLoading(false));
-
-    return () => {
-      if (urlRef.current) {
-        URL.revokeObjectURL(urlRef.current);
-        urlRef.current = null;
-      }
-    };
-  }, [scanId]);
-
-  const redraw = useCallback(() => {
-    if (imgRef.current && canvasRef.current) {
-      drawOverlays(canvasRef.current, imgRef.current, markerEntries, questionElements);
-    }
-  }, [markerEntries, questionElements]);
-
-  useEffect(() => { redraw(); }, [redraw]);
-
-  // ResizeObserver: Canvas neu zeichnen wenn das Bild skaliert wird.
-  // blobUrl als Dependency: erst wenn das <img> im DOM ist (blobUrl gesetzt),
-  // ist imgRef.current verfügbar und der Observer kann angehängt werden.
-  useEffect(() => {
-    const img = imgRef.current;
-    if (!img || !blobUrl) return;
-    const observer = new ResizeObserver(() => redraw());
-    observer.observe(img);
-    return () => observer.disconnect();
-  }, [redraw, blobUrl]);
-
-  if (imgLoading && !blobUrl) {
-    return (
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Spin />
-      </div>
-    );
-  }
-
-  if (!blobUrl) {
-    return (
-      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <FileImageOutlined style={{ fontSize: 48, color: '#bbb' }} />
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ flex: 1, overflow: 'auto', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: 4 }}>
-      <div style={{ position: 'relative', display: 'inline-block' }}>
-        <img
-          ref={imgRef}
-          src={blobUrl}
-          alt={`Scan ${scanId}`}
-          style={{ display: 'block', maxWidth: '100%' }}
-          onLoad={() => { setImgLoading(false); redraw(); }}
-        />
-        <canvas
-          ref={canvasRef}
-          style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none' }}
-        />
-      </div>
-    </div>
-  );
+function StateIcon({ state, style }: { state: string; style?: React.CSSProperties }) {
+  const cat = STATE_META[state]?.category ?? 'neutral';
+  if (cat === 'valid')   return <CheckCircleFilled  style={{ color: '#52c41a', ...style }} />;
+  if (cat === 'error')   return <CloseCircleFilled  style={{ color: '#ff4d4f', ...style }} />;
+  if (cat === 'warning') return <WarningFilled      style={{ color: '#faad14', ...style }} />;
+  if (state === 'DUPLICATE') return <CopyOutlined   style={{ color: '#d48806', ...style }} />;
+  return                        <ClockCircleOutlined style={{ color: '#bfbfbf', ...style }} />;
 }
 
 // ─── Schwellenwert-Standardwerte ───────────────────────────────────────────────
@@ -627,7 +480,6 @@ export function PositionValidationPanel({ portfolioId }: Props) {
             </Space>
 
             <div style={{ flex: 1, display: 'flex', overflow: 'hidden', gap: 8 }}>
-              {/* Bild-Viewer */}
               <ScanImageViewer
                 key={`${selectedScan.id}-${scanRefreshKey}`}
                 scanId={selectedScan.id}
