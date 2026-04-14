@@ -371,8 +371,8 @@ export function PortfoliosPage() {
               <Descriptions.Item label="Dauer (min)">{formatVal(exam.duration)}</Descriptions.Item>
               <Descriptions.Item label="Varianten">{formatVal(exam.variants)}</Descriptions.Item>
               <Descriptions.Item label="Typ">{displayType ? <Tag color={examTypeColor(displayType)}>{displayType}</Tag> : '–'}</Descriptions.Item>
-              <Descriptions.Item label="IMS-ID">{formatVal(exam.imsId)}</Descriptions.Item>
-              <Descriptions.Item label="IMS Entity-ID">{formatVal(exam.imsEntityId)}</Descriptions.Item>
+              <Descriptions.Item label="Suite-ID">{formatVal(exam.imsId)}</Descriptions.Item>
+              <Descriptions.Item label="Suite Entity-ID">{formatVal(exam.imsEntityId)}</Descriptions.Item>
               <Descriptions.Item label="Exportiert">{formatBool(exam.exported)}</Descriptions.Item>
               <Descriptions.Item label="Antwort-Permutation">{formatBool(exam.answerPermutation)}</Descriptions.Item>
               <Descriptions.Item label="Zweistufige Nummerierung">{formatBool(exam.secondLevelNumbering)}</Descriptions.Item>
@@ -855,7 +855,7 @@ export function PortfoliosPage() {
                               label: (
                                 <Space>
                                   <Text strong>{displayTitle}</Text>
-                                  {exam.imsId && <Text type="secondary" style={{ fontSize: 12 }}>IMS-ID: {exam.imsId}</Text>}
+                                  {exam.imsId && <Text type="secondary" style={{ fontSize: 12 }}>Suite-ID: {exam.imsId}</Text>}
                                   {displayType && <Tag color={examTypeColor(displayType)}>{displayType}</Tag>}
                                   {isExported && <Tag icon={<CheckCircleOutlined />} color="success">Exportiert</Tag>}
                                 </Space>
@@ -870,7 +870,7 @@ export function PortfoliosPage() {
                                     <Descriptions.Item label="Punkte">{exam.totalPoints ?? '–'}</Descriptions.Item>
                                     <Descriptions.Item label="Varianten">{exam.variants ?? 1}</Descriptions.Item>
                                     <Descriptions.Item label="Datum">{exam.examDate?.slice(0, 10) ?? '–'}</Descriptions.Item>
-                                    {exam.imsId && <Descriptions.Item label="IMS-ID">{exam.imsId}</Descriptions.Item>}
+                                    {exam.imsId && <Descriptions.Item label="Suite-ID">{exam.imsId}</Descriptions.Item>}
                                     {exam.imsEntityId && <Descriptions.Item label="IMS Entity">{exam.imsEntityId}</Descriptions.Item>}
                                   </Descriptions>
 
