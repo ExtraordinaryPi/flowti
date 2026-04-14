@@ -1,11 +1,11 @@
-# Flowti Frontend Design
+# flow Frontend Design
 
 **Datum:** 2026-04-13
 **Status:** Genehmigt
 
 ## Überblick
 
-Flowti ist ein React-TypeScript-Frontend für das `exp-server` Backend — ein Enterprise-Prüfungsverwaltungssystem (Spring Boot). Das Frontend deckt den vollständigen Prüfungsdurchführungs-Workflow ab: von der Portfolio-Verwaltung über die Zuweisung von Prüflingen, die Generierung und den Upload von Antwortbögen bis hin zum Rohdaten-Export.
+flow ist ein React-TypeScript-Frontend für das `flow-server` Backend — ein Enterprise-Prüfungsverwaltungssystem (Spring Boot). Das Frontend deckt den vollständigen Prüfungsdurchführungs-Workflow ab: von der Portfolio-Verwaltung über die Zuweisung von Prüflingen, die Generierung und den Upload von Antwortbögen bis hin zum Rohdaten-Export.
 
 ## Technologie-Stack
 
@@ -19,7 +19,7 @@ Flowti ist ein React-TypeScript-Frontend für das `exp-server` Backend — ein E
 
 - **URL:** konfigurierbar (wird im Login gesetzt)
 - **Authentifizierung:** OAuth2 (Platzhalter-Login jetzt, echtes OAuth2 später)
-- **Endpunkte:** ~250 REST-Endpunkte in `exp-app` (Spring Boot)
+- **Endpunkte:** ~250 REST-Endpunkte in `flow-app` (Spring Boot)
 - **Hauptcontroller:** Portfolio, Exam, Examinee, Examiner, Actor, User, Client, Scan, Rawdata, RawdataPaperbased, Folder, Settings, Session, Localization, LogEntry, ReviewTemplate, Software, ExamineeExamAssociation, ExaminerExamAssociation
 
 ## Navigationsstruktur

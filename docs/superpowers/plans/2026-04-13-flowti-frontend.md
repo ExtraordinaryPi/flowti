@@ -1,8 +1,8 @@
-# Flowti Frontend Implementation Plan
+# flow Frontend Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** React+TypeScript+Ant Design Frontend für das exp-server Prüfungsverwaltungssystem mit vollständigem Workflow (Portfolios → Examen → Prüflinge → Scans → Export).
+**Goal:** React+TypeScript+Ant Design Frontend für das flow-server Prüfungsverwaltungssystem mit vollständigem Workflow (Portfolios → Examen → Prüflinge → Scans → Export).
 
 **Architecture:** Seitenleisten-Layout (Ant Design Sider) mit 6 Hauptseiten, je einer API-Datei pro Controller, Zustand-Stores für Auth und Config, nativer fetch als HTTP-Client.
 
@@ -65,7 +65,7 @@ app/src/
 - [ ] **Schritt 1: MUI deinstallieren, Ant Design + Router installieren**
 
 ```bash
-cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/app
+cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flow/app
 npm uninstall @mui/material @mui/icons-material @emotion/react @emotion/styled
 npm install antd react-router-dom
 npm install --save-dev @types/react-router-dom
@@ -97,7 +97,7 @@ Ersetze `app/src/App.css` mit leerem Inhalt (Datei auf `/* global styles */` red
 - [ ] **Schritt 4: Build prüfen**
 
 ```bash
-cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/app
+cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flow/app
 npm run build
 ```
 
@@ -426,7 +426,7 @@ export const useAuthStore = create<AuthState>()(
       logout: () =>
         set({ token: null, isAuthenticated: false }),
     }),
-    { name: 'flowti-auth' }
+    { name: 'flow-auth' }
   )
 );
 ```
@@ -1186,7 +1186,7 @@ export function AppLayout() {
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="dark">
         <div style={{ padding: '16px', color: 'white', fontWeight: 'bold', fontSize: collapsed ? 14 : 18 }}>
-          {collapsed ? 'FT' : 'Flowti'}
+          {collapsed ? 'FT' : 'flow'}
         </div>
         <Menu
           theme="dark"
@@ -1268,7 +1268,7 @@ export function LoginPage() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#f0f2f5' }}>
       <Card style={{ width: 400 }}>
-        <Title level={3} style={{ textAlign: 'center', marginBottom: 24 }}>Flowti</Title>
+        <Title level={3} style={{ textAlign: 'center', marginBottom: 24 }}>flow</Title>
         <Form layout="vertical" onFinish={onFinish} autoComplete="off">
           <Form.Item label="Server-URL" name="serverUrl" rules={[{ required: true, message: 'Bitte Server-URL eingeben' }]}>
             <Input placeholder="https://example.com/" />
@@ -1343,7 +1343,7 @@ export default function App() {
 - [ ] **Schritt 3: Build prüfen**
 
 ```bash
-cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/app
+cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flow/app
 npm run build
 ```
 
@@ -2247,7 +2247,7 @@ export function SettingsPage() {
 - [ ] **Schritt 2: Finaler Build-Check**
 
 ```bash
-cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/app
+cd /run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flow/app
 npm run build
 ```
 

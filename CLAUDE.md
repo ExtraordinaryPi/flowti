@@ -1,6 +1,6 @@
-# Flowti – Projektdokumentation
+# Flow – Projektdokumentation
 
-Flowti ist eine React-Webanwendung für die Verwaltung von Prüfungsportfolios: Scan-Upload, Scan-Validierung, Antwortbogen-Generierung und Prüfling-Management.
+Flow ist eine React-Webanwendung für die Verwaltung von Prüfungsportfolios: Scan-Upload, Scan-Validierung, Antwortbogen-Generierung und Prüfling-Management.
 
 ## Tech-Stack
 
@@ -58,8 +58,8 @@ Der API-Client in `client.ts` macht automatisch:
 - Bei `401` → automatisches Logout + Redirect zu `/login`.
 
 Persistierung in localStorage:
-- `flowti-auth` → `authStore` (token, serverUrl, isAuthenticated)
-- `flowti-config` → `configStore` (isDarkMode)
+- `flow-auth` → `authStore` (token, serverUrl, isAuthenticated)
+- `flow-config` → `configStore` (isDarkMode)
 
 ## API-Layer
 

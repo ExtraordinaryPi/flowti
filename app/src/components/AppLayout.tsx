@@ -76,7 +76,7 @@ export function AppLayout() {
           >
             FT
           </div>
-          <span style={{ fontSize: 14, fontWeight: 700, color: token.colorText }}>Flowti</span>
+          <span style={{ fontSize: 14, fontWeight: 700, color: token.colorText }}>flow</span>
         </div>
 
         {/* Navigation */}

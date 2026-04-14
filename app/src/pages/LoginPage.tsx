@@ -51,7 +51,7 @@ export function LoginPage() {
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', background: '#f0f2f5' }}>
       <Card style={{ width: 400 }}>
-        <Title level={3} style={{ textAlign: 'center', marginBottom: 24 }}>Flowti</Title>
+        <Title level={3} style={{ textAlign: 'center', marginBottom: 24 }}>flow</Title>
         <Form layout="vertical" onFinish={onFinish} autoComplete="off">
           <Form.Item
             label="Server-URL"

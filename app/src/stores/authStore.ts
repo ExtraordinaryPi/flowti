@@ -20,6 +20,6 @@ export const useAuthStore = create<AuthState>()(
       logout: () =>
         set({ token: null, isAuthenticated: false }),
     }),
-    { name: 'flowti-auth' }
+    { name: 'flow-auth' }
   )
 );

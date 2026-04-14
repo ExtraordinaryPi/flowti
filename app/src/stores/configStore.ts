@@ -12,6 +12,6 @@ export const useConfigStore = create<ConfigState>()(
       isDarkMode: true,
       toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
     }),
-    { name: 'flowti-config' }
+    { name: 'flow-config' }
   )
 );
