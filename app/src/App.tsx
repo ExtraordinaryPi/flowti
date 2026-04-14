@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { App as AntApp, ConfigProvider } from 'antd';
+import { App as AntApp, ConfigProvider, theme as antTheme } from 'antd';
 import deDE from 'antd/locale/de_DE';
+import { useConfigStore } from './stores/configStore';
 import { AuthGuard } from './components/AuthGuard';
 import { AppLayout } from './components/AppLayout';
 import { LoginPage } from './pages/LoginPage';
@@ -12,8 +13,30 @@ import { RawdataPage } from './pages/RawdataPage';
 import { SettingsPage } from './pages/SettingsPage';
 
 export default function App() {
+  const isDarkMode = useConfigStore((s) => s.isDarkMode);
+
   return (
-    <ConfigProvider locale={deDE}>
+    <ConfigProvider
+      locale={deDE}
+      theme={{
+        algorithm: isDarkMode ? antTheme.darkAlgorithm : antTheme.defaultAlgorithm,
+        token: {
+          colorPrimary: '#7c3aed',
+          borderRadius: 8,
+        },
+        components: {
+          Layout: {
+            headerBg: isDarkMode ? '#111113' : '#ffffff',
+            bodyBg: isDarkMode ? '#09090b' : '#f4f4f8',
+            headerHeight: 52,
+          },
+          Menu: {
+            darkItemBg: 'transparent',
+            itemBg: 'transparent',
+          },
+        },
+      }}
+    >
       <AntApp>
         <BrowserRouter>
           <Routes>

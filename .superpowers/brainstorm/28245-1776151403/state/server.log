@@ -1,0 +1,4 @@
+{"type":"server-started","port":61501,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:61501","screen_dir":"/run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/.superpowers/brainstorm/28245-1776151403/content","state_dir":"/run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/.superpowers/brainstorm/28245-1776151403/state"}
+{"type":"screen-added","file":"/run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/.superpowers/brainstorm/28245-1776151403/content/design-direction.html"}
+{"type":"screen-added","file":"/run/media/cmoses-work/347519ad-6e34-46bc-9fa5-c0f878afd7cc/external/Projects/flowti/.superpowers/brainstorm/28245-1776151403/content/layout-mockup.html"}
+{"type":"server-stopped","reason":"idle timeout"}

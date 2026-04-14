@@ -33,12 +33,13 @@ export interface ClientRequest {
 export interface Folder {
   id: number;
   name: string;
-  parent?: EntityReduced;
+  parentId?: number; // -1 = Root (kein Parent)
+  parentFolder?: EntityReduced;
 }
 
 export interface FolderRequest {
   name: string;
-  parentId?: number;
+  parentFolder: { id: number }; // -1 für Root, sonst Parent-Folder-ID
 }
 
 export interface CurrentUser {

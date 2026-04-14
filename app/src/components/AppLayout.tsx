@@ -1,22 +1,23 @@
-import { useState } from 'react';
-import { Layout, Menu, Button, theme } from 'antd';
-import { useNavigate, useLocation, Outlet } from 'react-router-dom';
+import { Layout, Menu, Dropdown, Avatar, theme } from 'antd';
+import type { MenuProps } from 'antd';
 import {
+  SunOutlined,
+  MoonOutlined,
+  LogoutOutlined,
   FolderOutlined,
   FileTextOutlined,
   TeamOutlined,
   ScanOutlined,
   DatabaseOutlined,
   SettingOutlined,
-  LogoutOutlined,
-  MenuFoldOutlined,
-  MenuUnfoldOutlined,
 } from '@ant-design/icons';
+import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { useAuthStore } from '../stores/authStore';
+import { useConfigStore } from '../stores/configStore';
 
-const { Sider, Header, Content } = Layout;
+const { Header, Content } = Layout;
 
-const NAV_ITEMS = [
+const NAV_ITEMS: MenuProps['items'] = [
   { key: '/portfolios', icon: <FolderOutlined />, label: 'Portfolios' },
   { key: '/exams', icon: <FileTextOutlined />, label: 'Examen' },
   { key: '/examinees', icon: <TeamOutlined />, label: 'Prüflinge' },
@@ -26,45 +27,108 @@ const NAV_ITEMS = [
 ];
 
 export function AppLayout() {
-  const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const logout = useAuthStore((s) => s.logout);
-  const { token: { colorBgContainer, borderRadiusLG } } = theme.useToken();
+  const isDarkMode = useConfigStore((s) => s.isDarkMode);
+  const toggleDarkMode = useConfigStore((s) => s.toggleDarkMode);
+  const { token } = theme.useToken();
+
+  const dropdownItems: MenuProps['items'] = [
+    {
+      key: 'theme',
+      icon: isDarkMode ? <SunOutlined /> : <MoonOutlined />,
+      label: isDarkMode ? 'Helles Theme' : 'Dunkles Theme',
+      onClick: toggleDarkMode,
+    },
+    { type: 'divider' },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: 'Abmelden',
+      danger: true,
+      onClick: () => { logout(); navigate('/login'); },
+    },
+  ];
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed} theme="dark">
-        <div style={{ padding: '16px', color: 'white', fontWeight: 'bold', fontSize: collapsed ? 14 : 18 }}>
-          {collapsed ? 'FT' : 'Flowti'}
+      <Header
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          padding: '0 20px',
+          borderBottom: `1px solid ${token.colorBorderSecondary}`,
+          position: 'sticky',
+          top: 0,
+          zIndex: 100,
+          height: 52,
+        }}
+      >
+        {/* Logo */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginRight: 28, flexShrink: 0 }}>
+          <div
+            style={{
+              width: 26,
+              height: 26,
+              borderRadius: 7,
+              background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 11,
+              fontWeight: 800,
+              color: 'white',
+              letterSpacing: '-0.5px',
+            }}
+          >
+            FT
+          </div>
+          <span style={{ fontSize: 14, fontWeight: 700, color: token.colorText }}>Flowti</span>
         </div>
+
+        {/* Navigation */}
         <Menu
-          theme="dark"
-          mode="inline"
+          mode="horizontal"
           selectedKeys={[location.pathname]}
           items={NAV_ITEMS}
           onClick={({ key }) => navigate(key)}
+          style={{
+            flex: 1,
+            border: 'none',
+            background: 'transparent',
+            minWidth: 0,
+            lineHeight: '50px',
+          }}
         />
-      </Sider>
-      <Layout>
-        <Header style={{ background: colorBgContainer, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 24px' }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={() => setCollapsed(!collapsed)}
-          />
-          <Button
-            type="text"
-            icon={<LogoutOutlined />}
-            onClick={() => { logout(); navigate('/login'); }}
+
+        {/* Avatar Dropdown */}
+        <Dropdown menu={{ items: dropdownItems }} trigger={['click']} placement="bottomRight">
+          <Avatar
+            style={{
+              background: 'linear-gradient(135deg, #7c3aed, #4f46e5)',
+              cursor: 'pointer',
+              flexShrink: 0,
+              fontSize: 13,
+              fontWeight: 700,
+            }}
           >
-            Abmelden
-          </Button>
-        </Header>
-        <Content style={{ margin: 24, padding: 24, background: colorBgContainer, borderRadius: borderRadiusLG, minHeight: 360 }}>
-          <Outlet />
-        </Content>
-      </Layout>
+            CM
+          </Avatar>
+        </Dropdown>
+      </Header>
+
+      <Content
+        style={{
+          margin: 24,
+          padding: 24,
+          background: token.colorBgContainer,
+          borderRadius: token.borderRadiusLG,
+          minHeight: 360,
+        }}
+      >
+        <Outlet />
+      </Content>
     </Layout>
   );
 }

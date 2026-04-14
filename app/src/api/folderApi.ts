@@ -13,7 +13,7 @@ export const folderApi = {
     get<Folder>(`${BASE}/${id}`),
 
   getPortfolios: (id: number, params?: PageParams) =>
-    get<Page<Portfolio>>(`${BASE}/${id}/portfolios`, params),
+    get<Page<Portfolio>>(`${BASE}/${id}/portfolios`, params as Record<string, string | number | boolean | undefined>),
 
   create: (data: FolderRequest) =>
     post<Folder>(BASE, data),

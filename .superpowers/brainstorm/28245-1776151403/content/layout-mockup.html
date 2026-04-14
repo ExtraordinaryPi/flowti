@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flowti – Layout Mockup</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: #09090b; color: #e4e4e7; }
+
+/* ===== OUTER SHELL ===== */
+.shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ===== HEADER / TOPNAV ===== */
+.topnav {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 52px;
+  background: #111113;
+  border-bottom: 1px solid #1f1f23;
+  padding: 0 20px;
+  flex-shrink: 0;
+}
+.topnav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 28px;
+}
+.topnav-logo .logo-mark {
+  width: 26px; height: 26px; border-radius: 7px;
+  background: linear-gradient(135deg, #7c3aed, #4f46e5);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: white; letter-spacing: -0.5px;
+}
+.topnav-logo .logo-name {
+  font-size: 14px; font-weight: 700; color: #fafafa; letter-spacing: -0.3px;
+}
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+.nav-link {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 13px;
+  color: #71717a;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.nav-link:hover { color: #e4e4e7; background: #1a1a1f; }
+.nav-link.active {
+  color: #fafafa;
+  background: #1f1f27;
+}
+.nav-link .icon {
+  width: 14px; height: 14px; border-radius: 3px;
+  background: currentColor; opacity: 0.5;
+  flex-shrink: 0;
+}
+.nav-link.active .icon { opacity: 1; background: #7c3aed; }
+
+.topnav-right {
+  display: flex; align-items: center; gap: 10px; margin-left: auto;
+}
+.avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: white;
+  cursor: pointer;
+}
+.logout-btn {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: #71717a; cursor: pointer; padding: 4px 8px;
+  border-radius: 6px;
+}
+.logout-btn:hover { color: #e4e4e7; background: #1a1a1f; }
+
+/* ===== PAGE CONTENT ===== */
+.page {
+  flex: 1;
+  overflow: auto;
+  padding: 28px 32px;
+}
+
+/* ===== PAGE HEADER ===== */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.page-title { font-size: 22px; font-weight: 700; color: #fafafa; letter-spacing: -0.5px; }
+.page-subtitle { font-size: 13px; color: #52525b; margin-top: 3px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; transition: all 0.15s;
+}
+.btn-primary { background: #7c3aed; color: white; }
+.btn-primary:hover { background: #6d28d9; }
+.btn-ghost {
+  background: transparent; color: #71717a;
+  border: 1px solid #27272a;
+}
+.btn-ghost:hover { background: #1a1a1f; color: #e4e4e7; }
+
+/* ===== FILTERS BAR ===== */
+.filters-bar {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.search-box {
+  display: flex; align-items: center; gap: 8px;
+  background: #18181b; border: 1px solid #27272a; border-radius: 8px;
+  padding: 7px 12px; flex: 1; max-width: 320px;
+}
+.search-box input {
+  background: transparent; border: none; outline: none;
+  color: #e4e4e7; font-size: 13px; width: 100%;
+}
+.search-box input::placeholder { color: #52525b; }
+.search-icon { width: 14px; height: 14px; opacity: 0.4; flex-shrink: 0; }
+.filter-chip {
+  display: flex; align-items: center; gap: 5px;
+  background: #18181b; border: 1px solid #27272a; border-radius: 7px;
+  padding: 6px 12px; font-size: 12px; color: #71717a; cursor: pointer;
+}
+.filter-chip:hover { border-color: #3f3f46; color: #e4e4e7; }
+
+/* ===== LIST / TABLE ===== */
+.list-container {
+  background: #111113;
+  border: 1px solid #1f1f23;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.list-head {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr 100px 80px;
+  padding: 10px 20px;
+  background: #0f0f11;
+  border-bottom: 1px solid #1f1f23;
+}
+.list-head-cell {
+  font-size: 11px; font-weight: 600; color: #52525b;
+  text-transform: uppercase; letter-spacing: 0.6px;
+}
+
+.list-row {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr 1fr 100px 80px;
+  padding: 13px 20px;
+  border-bottom: 1px solid #1a1a1f;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.list-row:last-child { border-bottom: none; }
+.list-row:hover { background: #16161a; }
+
+.name-cell { display: flex; align-items: center; gap: 11px; }
+.row-avatar {
+  width: 32px; height: 32px; border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; color: white; flex-shrink: 0;
+}
+.row-name { font-size: 13px; font-weight: 500; color: #e4e4e7; }
+.row-sub { font-size: 11px; color: #52525b; margin-top: 1px; }
+
+.cell { font-size: 13px; color: #71717a; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; }
+.badge.active { background: rgba(16, 185, 129, 0.12); color: #10b981; }
+.badge.active .badge-dot { background: #10b981; }
+.badge.inactive { background: rgba(113, 113, 122, 0.12); color: #52525b; }
+.badge.inactive .badge-dot { background: #52525b; }
+.badge.pending { background: rgba(245, 158, 11, 0.12); color: #f59e0b; }
+.badge.pending .badge-dot { background: #f59e0b; }
+
+.actions-cell { display: flex; gap: 4px; justify-content: flex-end; }
+.icon-btn {
+  width: 28px; height: 28px; border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+  background: transparent; cursor: pointer; color: #52525b;
+  transition: all 0.12s; border: 1px solid transparent;
+}
+.icon-btn:hover { background: #1f1f27; border-color: #27272a; color: #e4e4e7; }
+
+/* ===== PAGINATION ===== */
+.pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 20px;
+  border-top: 1px solid #1a1a1f;
+}
+.pagination-info { font-size: 12px; color: #52525b; }
+.pagination-btns { display: flex; gap: 4px; }
+.page-btn {
+  width: 30px; height: 30px; border-radius: 7px; border: 1px solid #27272a;
+  background: transparent; color: #71717a; font-size: 12px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.page-btn.current { background: #7c3aed; border-color: #7c3aed; color: white; }
+.page-btn:hover:not(.current) { background: #1a1a1f; color: #e4e4e7; }
+
+/* ===== LABEL ===== */
+.top-label {
+  font-size: 11px; color: #52525b; margin-bottom: 28px; padding: 8px 12px;
+  background: #1a1a1f; border-radius: 6px; display: inline-block;
+}
+</style>
+</head>
+<body>
+
+<div style="padding: 16px 24px 8px; background: #09090b; border-bottom: 1px solid #1f1f23;">
+  <span class="top-label">👆 So würde das neue Layout aussehen — Navigation in der Headerzeile, Listenansicht im Stil der Referenz-App</span>
+</div>
+
+<div class="shell">
+
+  <!-- HEADER NAV -->
+  <nav class="topnav">
+    <div class="topnav-logo">
+      <div class="logo-mark">FT</div>
+      <span class="logo-name">Flowti</span>
+    </div>
+    <div class="nav-links">
+      <a class="nav-link active">Portfolios</a>
+      <a class="nav-link">Examen</a>
+      <a class="nav-link">Prüflinge</a>
+      <a class="nav-link">Scans</a>
+      <a class="nav-link">Rohdaten</a>
+      <a class="nav-link">Einstellungen</a>
+    </div>
+    <div class="topnav-right">
+      <div class="logout-btn">
+        <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Abmelden
+      </div>
+      <div class="avatar">CM</div>
+    </div>
+  </nav>
+
+  <!-- PAGE CONTENT -->
+  <div class="page">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">Portfolios</div>
+        <div class="page-subtitle">12 Portfolios gesamt</div>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-ghost">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Export
+        </button>
+        <button class="btn btn-primary">
+          <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Neu
+        </button>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters-bar">
+      <div class="search-box">
+        <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input placeholder="Suchen…" />
+      </div>
+      <div class="filter-chip">
+        Status
+        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="filter-chip">
+        Zeitraum
+        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+    </div>
+
+    <!-- LIST -->
+    <div class="list-container">
+      <div class="list-head">
+        <div class="list-head-cell">Portfolio</div>
+        <div class="list-head-cell">Erstellt am</div>
+        <div class="list-head-cell">Examen</div>
+        <div class="list-head-cell">Status</div>
+        <div class="list-head-cell"></div>
+      </div>
+
+      <!-- Rows -->
+      <div class="list-row">
+        <div class="name-cell">
+          <div class="row-avatar" style="background: linear-gradient(135deg, #7c3aed, #4f46e5);">WS</div>
+          <div>
+            <div class="row-name">Prüfung Wintersemester 2024</div>
+            <div class="row-sub">ID: port-0042</div>
+          </div>
+        </div>
+        <div class="cell">14. Jan 2024</div>
+        <div class="cell">4 Examen</div>
+        <div class="cell"><span class="badge active"><span class="badge-dot"></span>Aktiv</span></div>
+        <div class="actions-cell">
+          <div class="icon-btn">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <div class="icon-btn">
+            <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <div class="list-row">
+        <div class="name-cell">
+          <div class="row-avatar" style="background: linear-gradient(135deg, #0ea5e9, #6366f1);">SS</div>
+          <div>
+            <div class="row-name">Prüfung Sommersemester 2024</div>
+            <div class="row-sub">ID: port-0039</div>
+          </div>
+        </div>
+        <div class="cell">3. Apr 2024</div>
+        <div class="cell">6 Examen</div>
+        <div class="cell"><span class="badge pending"><span class="badge-dot"></span>In Bearbeitung</span></div>
+        <div class="actions-cell">
+          <div class="icon-btn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="icon-btn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+        </div>
+      </div>
+
+      <div class="list-row">
+        <div class="name-cell">
+          <div class="row-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">WS</div>
+          <div>
+            <div class="row-name">Prüfung Wintersemester 2023</div>
+            <div class="row-sub">ID: port-0031</div>
+          </div>
+        </div>
+        <div class="cell">9. Okt 2023</div>
+        <div class="cell">3 Examen</div>
+        <div class="cell"><span class="badge inactive"><span class="badge-dot"></span>Archiv</span></div>
+        <div class="actions-cell">
+          <div class="icon-btn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="icon-btn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+        </div>
+      </div>
+
+      <div class="list-row">
+        <div class="name-cell">
+          <div class="row-avatar" style="background: linear-gradient(135deg, #10b981, #0ea5e9);">SS</div>
+          <div>
+            <div class="row-name">Prüfung Sommersemester 2023</div>
+            <div class="row-sub">ID: port-0028</div>
+          </div>
+        </div>
+        <div class="cell">2. Apr 2023</div>
+        <div class="cell">5 Examen</div>
+        <div class="cell"><span class="badge inactive"><span class="badge-dot"></span>Archiv</span></div>
+        <div class="actions-cell">
+          <div class="icon-btn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
+          <div class="icon-btn"><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination">
+        <span class="pagination-info">1–4 von 12 Portfolios</span>
+        <div class="pagination-btns">
+          <button class="page-btn">‹</button>
+          <button class="page-btn current">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">›</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</body>
+</html>

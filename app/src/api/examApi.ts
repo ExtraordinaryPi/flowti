@@ -36,8 +36,12 @@ export const examApi = {
     return postForm<unknown>(`${BASE}/${id}/questionSheet/${variant}`, form);
   },
 
-  downloadRawData: (id: number, exportMode: string) =>
-    downloadBlob(`${BASE}/${id}/generateRawData/${exportMode}`),
+  downloadRawData: (id: number, exportMode: string, namingTemplate?: string) =>
+    downloadBlob(
+      namingTemplate
+        ? `${BASE}/${id}/generateRawData/${exportMode}/${encodeURIComponent(namingTemplate)}`
+        : `${BASE}/${id}/generateRawData/${exportMode}`
+    ),
 
   getRawdataTable: (id: number, params?: PageParams) =>
     get<Page<Record<string, unknown>>>(`${BASE}/${id}/rawdataTable`, params),

@@ -1,7 +1,12 @@
 import { useAuthStore } from '../stores/authStore';
 
 export class ApiError extends Error {
-  constructor(public code: string, public title: string, public status: number) {
+  constructor(
+    public code: string,
+    public title: string,
+    public status: number,
+    public data?: unknown,
+  ) {
     super(title);
   }
 }
@@ -42,7 +47,8 @@ async function request<T>(
     throw new ApiError(
       errorBody.code ?? 'UNKNOWN',
       errorBody.title ?? `Fehler ${response.status}`,
-      response.status
+      response.status,
+      errorBody,
     );
   }
 
@@ -93,6 +99,13 @@ export function del<T>(path: string, body?: unknown): Promise<T> {
   return request<T>(path, {
     method: 'DELETE',
     body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+}
+
+export function putForm<T>(path: string, formData: FormData): Promise<T> {
+  return request<T>(path, {
+    method: 'PUT',
+    body: formData,
   });
 }
 

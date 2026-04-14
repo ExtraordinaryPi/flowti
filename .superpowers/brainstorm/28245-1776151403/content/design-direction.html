@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design-Richtung wählen</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0f0f13; color: #e2e2e2; padding: 32px; }
+
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; color: #fff; }
+  .subtitle { font-size: 14px; color: #888; margin-bottom: 32px; }
+
+  .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+  .card {
+    border: 2px solid #2a2a35;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: #5a5aef; transform: translateY(-2px); }
+  .card.selected { border-color: #7c7cff; box-shadow: 0 0 0 1px #7c7cff; }
+
+  .card-preview { height: 220px; position: relative; overflow: hidden; }
+  .card-body { padding: 16px; background: #1a1a24; }
+  .card-body h3 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 4px; }
+  .card-body p { font-size: 12px; color: #888; line-height: 1.5; }
+
+  .badge {
+    position: absolute; top: 10px; right: 10px;
+    background: #5a5aef; color: white; font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 20px; letter-spacing: 0.5px;
+  }
+
+  /* === MOCKUP A: Dark Warm (Lovable-Style) === */
+  .preview-a {
+    background: #141418;
+    display: flex;
+    height: 100%;
+  }
+  .preview-a .sidebar {
+    width: 56px;
+    background: #1b1b20;
+    border-right: 1px solid #2a2a30;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 0;
+    gap: 6px;
+  }
+  .preview-a .logo-dot {
+    width: 24px; height: 24px; border-radius: 6px;
+    background: linear-gradient(135deg, #7c6ff7, #5a4fcf);
+    margin-bottom: 10px;
+  }
+  .preview-a .nav-dot {
+    width: 28px; height: 28px; border-radius: 7px;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .preview-a .nav-dot.active { background: #2e2e3a; }
+  .preview-a .nav-dot span { width: 14px; height: 2px; background: #c5c1b9; border-radius: 2px; display: block; }
+  .preview-a .nav-dot.active span { background: #fff; }
+  .preview-a .main { flex: 1; display: flex; flex-direction: column; }
+  .preview-a .topbar {
+    height: 40px; background: #18181d; border-bottom: 1px solid #2a2a30;
+    display: flex; align-items: center; padding: 0 12px; gap: 8px;
+  }
+  .preview-a .topbar-title { font-size: 11px; font-weight: 600; color: #dcdad5; }
+  .preview-a .topbar-badge {
+    background: #2e2e3a; color: #c5c1b9; font-size: 9px;
+    padding: 2px 6px; border-radius: 10px;
+  }
+  .preview-a .content { flex: 1; padding: 12px; background: #141418; }
+  .preview-a .content-card {
+    background: #1e1e25; border: 1px solid #2a2a35;
+    border-radius: 8px; padding: 10px; margin-bottom: 8px;
+  }
+  .preview-a .row { display: flex; gap: 6px; align-items: center; }
+  .preview-a .tag { background: #2e2e3a; color: #c5c1b9; font-size: 9px; padding: 2px 6px; border-radius: 4px; }
+  .preview-a .tag.accent { background: rgba(124, 111, 247, 0.2); color: #a89ef5; }
+  .preview-a .dot { width: 6px; height: 6px; border-radius: 50%; background: #7c6ff7; flex-shrink: 0; }
+  .preview-a .line { height: 2px; border-radius: 1px; background: #2a2a35; margin-top: 6px; }
+  .preview-a .line.short { width: 60%; }
+
+  /* === MOCKUP B: Slate Professional (Linear-Style) === */
+  .preview-b {
+    background: #f8f8fb;
+    display: flex;
+    height: 100%;
+  }
+  .preview-b .sidebar {
+    width: 140px;
+    background: #ffffff;
+    border-right: 1px solid #e8e8ee;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 10px;
+    gap: 3px;
+  }
+  .preview-b .logo-area {
+    display: flex; align-items: center; gap: 6px; margin-bottom: 14px; padding: 0 4px;
+  }
+  .preview-b .logo-icon { width: 18px; height: 18px; border-radius: 5px; background: #5e6ad2; }
+  .preview-b .logo-text { font-size: 11px; font-weight: 700; color: #111; }
+  .preview-b .nav-item {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 6px; border-radius: 5px; cursor: pointer;
+  }
+  .preview-b .nav-item.active { background: #f0f0fa; }
+  .preview-b .nav-dot { width: 12px; height: 12px; border-radius: 3px; background: #d0d0dc; }
+  .preview-b .nav-dot.active { background: #5e6ad2; }
+  .preview-b .nav-label { font-size: 10px; color: #666; }
+  .preview-b .nav-item.active .nav-label { color: #5e6ad2; font-weight: 600; }
+  .preview-b .main { flex: 1; display: flex; flex-direction: column; }
+  .preview-b .topbar {
+    height: 40px; background: #fff; border-bottom: 1px solid #e8e8ee;
+    display: flex; align-items: center; padding: 0 14px; justify-content: space-between;
+  }
+  .preview-b .topbar-title { font-size: 12px; font-weight: 600; color: #111; }
+  .preview-b .topbar-btn {
+    background: #5e6ad2; color: white; font-size: 9px; font-weight: 600;
+    padding: 4px 8px; border-radius: 5px;
+  }
+  .preview-b .content { flex: 1; padding: 14px; }
+  .preview-b .content-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+  }
+  .preview-b .table-head {
+    display: flex; gap: 0; border: 1px solid #e8e8ee; border-radius: 6px 6px 0 0;
+    background: #f5f5f9; overflow: hidden;
+  }
+  .preview-b .th {
+    flex: 1; padding: 5px 8px; font-size: 9px; font-weight: 600;
+    color: #888; text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .preview-b .table-row {
+    display: flex; gap: 0; border: 1px solid #e8e8ee; border-top: none;
+    background: white;
+  }
+  .preview-b .td { flex: 1; padding: 5px 8px; font-size: 10px; color: #333; }
+  .preview-b .badge-sm {
+    display: inline-block; font-size: 9px; padding: 1px 5px; border-radius: 3px;
+    background: #ededf8; color: #5e6ad2; font-weight: 500;
+  }
+
+  /* === MOCKUP C: Indigo/Dark mit hellem Content === */
+  .preview-c {
+    background: #f4f4f8;
+    display: flex;
+    height: 100%;
+  }
+  .preview-c .sidebar {
+    width: 56px;
+    background: linear-gradient(180deg, #312e81 0%, #1e1b4b 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 0;
+    gap: 8px;
+  }
+  .preview-c .logo-dot {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .preview-c .logo-dot span { font-size: 11px; font-weight: 800; color: white; }
+  .preview-c .nav-icon {
+    width: 34px; height: 34px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
+  }
+  .preview-c .nav-icon.active { background: rgba(255,255,255,0.15); }
+  .preview-c .nav-icon .icon-line {
+    width: 16px; height: 2px; background: rgba(255,255,255,0.5); border-radius: 1px; display: block;
+  }
+  .preview-c .nav-icon.active .icon-line { background: white; }
+  .preview-c .main { flex: 1; display: flex; flex-direction: column; }
+  .preview-c .topbar {
+    height: 44px; background: white; border-bottom: 1px solid #e0e0ea;
+    display: flex; align-items: center; padding: 0 14px; justify-content: space-between;
+  }
+  .preview-c .breadcrumb { font-size: 12px; color: #333; font-weight: 500; }
+  .preview-c .topbar-actions { display: flex; gap: 6px; align-items: center; }
+  .preview-c .action-btn {
+    font-size: 9px; font-weight: 600; padding: 4px 10px; border-radius: 6px;
+  }
+  .preview-c .action-btn.primary { background: #4f46e5; color: white; }
+  .preview-c .action-btn.ghost { background: #f0f0f8; color: #4f46e5; }
+  .preview-c .content { flex: 1; padding: 14px; }
+  .preview-c .stat-row { display: flex; gap: 8px; margin-bottom: 10px; }
+  .preview-c .stat-card {
+    flex: 1; background: white; border: 1px solid #e0e0ea;
+    border-radius: 8px; padding: 8px 10px;
+  }
+  .preview-c .stat-label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; color: #888; }
+  .preview-c .stat-value { font-size: 16px; font-weight: 700; color: #111; margin-top: 2px; }
+  .preview-c .data-table { background: white; border: 1px solid #e0e0ea; border-radius: 8px; overflow: hidden; }
+  .preview-c .table-head { display: flex; background: #f8f8fc; padding: 5px 10px; border-bottom: 1px solid #e0e0ea; }
+  .preview-c .th { flex: 1; font-size: 8px; font-weight: 700; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+  .preview-c .table-row { display: flex; padding: 6px 10px; border-bottom: 1px solid #f0f0f6; }
+  .preview-c .td { flex: 1; font-size: 10px; color: #333; }
+  .preview-c .pill { display: inline-block; font-size: 8px; padding: 2px 6px; border-radius: 10px; font-weight: 600; }
+  .preview-c .pill.green { background: #ecfdf5; color: #059669; }
+  .preview-c .pill.blue { background: #eff6ff; color: #2563eb; }
+
+  .selection-hint { text-align: center; margin-top: 24px; font-size: 13px; color: #666; }
+  .selection-hint span { color: #7c7cff; }
+</style>
+</head>
+<body>
+
+<h1>Welche Design-Richtung gefällt dir?</h1>
+<p class="subtitle">Die Struktur (Sidebar + Header + Inhalt) bleibt gleich — nur Farben, Stil und Typografie ändern sich.</p>
+
+<div class="cards">
+
+  <!-- OPTION A -->
+  <div class="card" id="card-a" onclick="select('a')">
+    <div class="card-preview">
+      <div class="badge">Lovable-Stil</div>
+      <div class="preview-a">
+        <div class="sidebar">
+          <div class="logo-dot"></div>
+          <div class="nav-dot active"><span></span></div>
+          <div class="nav-dot"><span></span></div>
+          <div class="nav-dot"><span></span></div>
+          <div class="nav-dot"><span></span></div>
+        </div>
+        <div class="main">
+          <div class="topbar">
+            <span class="topbar-title">Portfolios</span>
+            <span class="topbar-badge">12</span>
+          </div>
+          <div class="content">
+            <div class="content-card">
+              <div class="row"><div class="dot"></div><span style="font-size:10px;color:#dcdad5;">Prüfung WS 2024</span><div class="tag accent">Aktiv</div></div>
+              <div class="line"></div>
+            </div>
+            <div class="content-card">
+              <div class="row"><div class="dot" style="background:#444"></div><span style="font-size:10px;color:#888;">Prüfung SS 2024</span><div class="tag">Archiv</div></div>
+              <div class="line short"></div>
+            </div>
+            <div class="content-card">
+              <div class="row"><div class="dot" style="background:#444"></div><span style="font-size:10px;color:#888;">Portfolio 2023</span><div class="tag">Archiv</div></div>
+              <div class="line short"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Dark & Warm</h3>
+      <p>Dunkler Hintergrund, warme Neutraltöne, violette Akzente. Genau der Lovable-App-Stil.</p>
+    </div>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="card" id="card-b" onclick="select('b')">
+    <div class="card-preview">
+      <div class="badge" style="background:#5e6ad2;">Linear-Stil</div>
+      <div class="preview-b">
+        <div class="sidebar">
+          <div class="logo-area">
+            <div class="logo-icon"></div>
+            <span class="logo-text">Flowti</span>
+          </div>
+          <div class="nav-item active">
+            <div class="nav-dot active"></div>
+            <span class="nav-label">Portfolios</span>
+          </div>
+          <div class="nav-item">
+            <div class="nav-dot"></div>
+            <span class="nav-label">Examen</span>
+          </div>
+          <div class="nav-item">
+            <div class="nav-dot"></div>
+            <span class="nav-label">Prüflinge</span>
+          </div>
+          <div class="nav-item">
+            <div class="nav-dot"></div>
+            <span class="nav-label">Scans</span>
+          </div>
+        </div>
+        <div class="main">
+          <div class="topbar">
+            <span class="topbar-title">Portfolios</span>
+            <span class="topbar-btn">+ Neu</span>
+          </div>
+          <div class="content">
+            <div class="table-head">
+              <span class="th">Name</span>
+              <span class="th">Status</span>
+              <span class="th">Aktion</span>
+            </div>
+            <div class="table-row">
+              <div class="td">Prüfung WS 24</div>
+              <div class="td"><span class="badge-sm">Aktiv</span></div>
+              <div class="td" style="color:#5e6ad2;font-size:10px;font-weight:600;">Öffnen</div>
+            </div>
+            <div class="table-row">
+              <div class="td">Prüfung SS 24</div>
+              <div class="td"><span class="badge-sm" style="background:#f0f0f0;color:#888;">Archiv</span></div>
+              <div class="td" style="color:#5e6ad2;font-size:10px;font-weight:600;">Öffnen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Clean Light (Linear)</h3>
+      <p>Weißes Layout, weiße Sidebar, Indigo-Akzente. Professionell und minimal.</p>
+    </div>
+  </div>
+
+  <!-- OPTION C -->
+  <div class="card" id="card-c" onclick="select('c')">
+    <div class="card-preview">
+      <div class="badge" style="background:#4f46e5;">Modern</div>
+      <div class="preview-c">
+        <div class="sidebar">
+          <div class="logo-dot"><span>FT</span></div>
+          <div class="nav-icon active"><span class="icon-line"></span></div>
+          <div class="nav-icon"><span class="icon-line"></span></div>
+          <div class="nav-icon"><span class="icon-line"></span></div>
+          <div class="nav-icon"><span class="icon-line"></span></div>
+        </div>
+        <div class="main">
+          <div class="topbar">
+            <span class="breadcrumb">Portfolios</span>
+            <div class="topbar-actions">
+              <span class="action-btn ghost">Exportieren</span>
+              <span class="action-btn primary">Neu</span>
+            </div>
+          </div>
+          <div class="content">
+            <div class="stat-row">
+              <div class="stat-card">
+                <div class="stat-label">Gesamt</div>
+                <div class="stat-value">12</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-label">Aktiv</div>
+                <div class="stat-value" style="color:#4f46e5;">3</div>
+              </div>
+            </div>
+            <div class="data-table">
+              <div class="table-head">
+                <span class="th">Name</span>
+                <span class="th">Status</span>
+              </div>
+              <div class="table-row">
+                <div class="td">Prüfung WS 24</div>
+                <div class="td"><span class="pill green">Aktiv</span></div>
+              </div>
+              <div class="table-row">
+                <div class="td">Prüfung SS 24</div>
+                <div class="td"><span class="pill blue">Archiv</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Indigo + Hell</h3>
+      <p>Dunkle Indigo-Sidebar, heller Hauptbereich, Statistik-Cards oben. Modern und strukturiert.</p>
+    </div>
+  </div>
+
+</div>
+
+<p class="selection-hint">Klicke auf eine Karte, um sie auszuwählen — oder schreib mir einfach <span>A, B oder C</span> im Terminal.</p>
+
+<script>
+function select(choice) {
+  document.querySelectorAll('.card').forEach(c => c.classList.remove('selected'));
+  document.getElementById('card-' + choice).classList.add('selected');
+
+  // Record selection
+  if (window.__recordChoice) window.__recordChoice(choice, 'Option ' + choice.toUpperCase());
+}
+</script>
+
+</body>
+</html>

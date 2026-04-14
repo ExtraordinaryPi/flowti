@@ -1,5 +1,5 @@
-import { post, postForm, put, del, downloadBlob } from './client';
-import { Scan } from '../types/scan';
+import { get, post, postForm, put, del, downloadBlob } from './client';
+import { Scan, MarkerBarcodeEntry, ScanQuestionElement, MarkerThresholds } from '../types/scan';
 
 const BASE = '/rest/app/rawdataPaperbased';
 
@@ -25,4 +25,16 @@ export const rawdataPaperbasedApi = {
 
   delete: (id: number) =>
     del<void>(`${BASE}/${id}`),
+
+  getMarkerBarcodeEntries: (id: number) =>
+    get<MarkerBarcodeEntry[]>(`${BASE}/${id}/markerBarcodeEntries`),
+
+  getBoundElements: (id: number) =>
+    get<ScanQuestionElement[]>(`${BASE}/${id}/boundElementsNoWarp`),
+
+  updateMarkerThresholds: (id: number, thresholds: MarkerThresholds) =>
+    put<void>(`/rest/app/scan/${id}/updateMarkerThresholds`, thresholds),
+
+  applyWarp: (id: number, warp: { warpX: number; warpY: number }) =>
+    put<void>(`${BASE}/${id}/warp`, warp),
 };
