@@ -21,10 +21,11 @@ export default defineConfig(({ mode }) => {
       environment: 'jsdom',
       globals: true,
       setupFiles: ['./src/test/setup.ts'],
+      exclude: ['node_modules', 'e2e/**'],
       coverage: {
         provider: 'v8',
         reporter: ['text', 'html'],
-        exclude: ['node_modules/', 'src/test/'],
+        exclude: ['node_modules/', 'src/test/', 'e2e/'],
       },
     },
   }

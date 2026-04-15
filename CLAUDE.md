@@ -166,6 +166,57 @@ npx tsc --noEmit
 
 Pre-existierende Fehler (betreffen `PageParams`-Typen in API-Dateien) ignorieren – sie waren vor diesem Projekt vorhanden.
 
+## Tests
+
+```bash
+npm run test        # Vitest im Watch-Mode
+npm run test:run    # Vitest einmalig (CI)
+npm run test:coverage  # mit Coverage-Report (HTML in coverage/)
+npm run test:e2e    # Playwright E2E (startet Vite-Dev-Server automatisch)
+```
+
+### Unit- und Integrationstests (Vitest + RTL + MSW)
+
+```
+src/
+  test/
+    setup.ts           # MSW-Server-Lifecycle (beforeAll/afterEach/afterAll)
+    mocks/
+      server.ts        # setupServer() für Node
+      handlers.ts      # HTTP-Handler-Definitionen (http.get, http.post, …)
+  utils/__tests__/     # Pure-Function-Tests (canvasUtils, pageUtils)
+  stores/__tests__/    # Store-Tests ohne React (useStore.getState())
+  components/__tests__ # Integrationstests mit render() + MemoryRouter
+```
+
+**Wichtig:** Zustand-Stores vor jedem Test zurücksetzen:
+```typescript
+beforeEach(() => {
+  useAuthStore.setState({ token: null, serverUrl: '', isAuthenticated: false })
+})
+```
+
+MSW-Handler für neue Endpunkte in `src/test/mocks/handlers.ts` ergänzen.
+
+### E2E-Tests (Playwright)
+
+Konfiguration: `app/playwright.config.ts`  
+Tests: `app/e2e/*.spec.ts`  
+Browser: Chromium unter `/opt/pw-browsers/chromium-1194/chrome-linux/chrome`
+
+**Auth-State in E2E-Tests ohne echten Login:**
+```typescript
+// Vor page.goto() aufrufen – setzt localStorage BEVOR Zustand-Store initialisiert
+await page.addInitScript(() => {
+  localStorage.setItem('flow-auth', JSON.stringify({
+    state: { token: '', serverUrl: '', isAuthenticated: true },
+    version: 0,
+  }))
+})
+```
+
+**Selektoren:** Semantische Locators bevorzugen (`getByRole`, `getByLabel`) statt CSS-Klassen (`ant-modal-content`), da Ant Design CSS-Klassen versioniert.
+
 ## Fehlerbehandlung
 
 Der API-Client wirft `ApiError` (aus `src/api/client.ts`) mit `code`, `title`, `status`. In Komponenten:
